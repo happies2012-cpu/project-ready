@@ -1,56 +1,86 @@
 const prisma = require('../db/prisma');
 const stripeService = require('../services/stripeService');
+const payuService = require('../services/payuService');
 const { generateInvoice } = require('../services/invoiceService');
 
-// Generate unique invoice number
-const generateInvoiceNumber = () => {
-    const timestamp = Date.now();
-    const random = Math.floor(Math.random() * 1000);
-    return `INV-${timestamp}-${random}`;
-};
-
-// Create payment
+// Initialize payment
 exports.createPayment = async (req, res) => {
     try {
-        const { amount, projectId, projectTitle, description } = req.body;
-        const userId = req.user.id;
-        const userName = req.user.name;
-        const userEmail = req.user.email;
+        const { amount, currency = 'INR', gateway = 'stripe', description, metadata, projectId, subscriptionPlan } = req.body;
+        const { id: userId, name: userName, email: userEmail } = req.user;
 
-        // Create payment intent with Stripe
-        const { clientSecret, paymentIntentId } = await stripeService.createPaymentIntent(
-            amount,
-            process.env.DEFAULT_CURRENCY || 'INR',
-            {
-                userId,
-                projectId: projectId || '',
-                projectTitle: projectTitle || ''
-            }
-        );
-
-        // Create payment record
+        // Create local payment record
         const payment = await prisma.payment.create({
             data: {
                 userId,
                 userName,
                 userEmail,
                 amount,
-                currency: process.env.DEFAULT_CURRENCY || 'INR',
+                currency,
                 status: 'pending',
-                paymentMethod: 'card',
-                gateway: 'stripe',
-                gatewayPaymentId: paymentIntentId,
-                projectId,
-                projectTitle,
+                paymentMethod: 'unknown',
+                gateway,
                 description,
-                invoiceNumber: generateInvoiceNumber()
+                metadata,
+                projectId,
+                subscriptionPlan,
+                invoiceNumber: `INV-${Date.now()}`
             }
         });
 
-        res.json({
-            payment,
-            clientSecret
-        });
+        if (gateway === 'stripe') {
+            const paymentIntent = await stripeService.createPaymentIntent({
+                amount,
+                currency,
+                description,
+                metadata: {
+                    ...metadata,
+                    paymentId: payment.id,
+                    userId
+                }
+            });
+
+            // Update payment with gateway ID
+            await prisma.payment.update({
+                where: { id: payment.id },
+                data: { gatewayPaymentId: paymentIntent.id }
+            });
+
+            return res.json({
+                paymentId: payment.id,
+                clientSecret: paymentIntent.client_secret,
+                gateway: 'stripe'
+            });
+        }
+        else if (gateway === 'payu') {
+            const txnid = `TXN-${payment.id}`;
+
+            // Update payment with transaction ID
+            await prisma.payment.update({
+                where: { id: payment.id },
+                data: { gatewayPaymentId: txnid }
+            });
+
+            const payuData = payuService.createPaymentRequest({
+                txnid,
+                amount,
+                productinfo: description || 'Project Ready Payment',
+                firstname: userName.split(' ')[0],
+                email: userEmail,
+                phone: req.user.phone || '9999999999',
+                surl: `${process.env.FRONTEND_URL}/payment/success`,
+                furl: `${process.env.FRONTEND_URL}/payment/failure`
+            });
+
+            return res.json({
+                paymentId: payment.id,
+                payuParams: payuData,
+                action: payuService.baseUrl + '/_payment',
+                gateway: 'payu'
+            });
+        }
+
+        res.status(400).json({ error: 'Invalid gateway selected' });
     } catch (error) {
         console.error('Create payment error:', error);
         res.status(500).json({ error: 'Failed to create payment' });
