@@ -1,0 +1,133 @@
+// This is your Prisma schema file for Project Service
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id              String    @id @default(uuid())
+  title           String
+  description     String    @db.Text
+  category        String
+  tags            String[]
+  thumbnail       String?
+  images          String[]
+  demoUrl         String?
+  sourceUrl       String?
+  downloadUrl     String?
+  price           Float     @default(0)
+  isPremium       Boolean   @default(false)
+  isActive        Boolean   @default(true)
+  isFeatured      Boolean   @default(false)
+  
+  // Stats
+  views           Int       @default(0)
+  downloads       Int       @default(0)
+  likes           Int       @default(0)
+  rating          Float     @default(0)
+  ratingCount     Int       @default(0)
+  
+  // Metadata
+  authorId        String
+  authorName      String
+  authorEmail     String
+  
+  // Tech Stack
+  techStack       String[]
+  framework       String?
+  language        String?
+  
+  // SEO
+  slug            String    @unique
+  metaTitle       String?
+  metaDescription String?
+  keywords        String[]
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  publishedAt     DateTime?
+  
+  // Relations
+  files           ProjectFile[]
+  reviews         Review[]
+  favorites       Favorite[]
+  
+  @@index([category])
+  @@index([authorId])
+  @@index([slug])
+  @@index([isActive, isFeatured])
+  @@index([createdAt])
+}
+
+model ProjectFile {
+  id          String   @id @default(uuid())
+  projectId   String
+  fileName    String
+  fileUrl     String
+  fileSize    Int
+  fileType    String
+  uploadedAt  DateTime @default(now())
+  
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@index([projectId])
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  projectId   String
+  userId      String
+  userName    String
+  rating      Int      // 1-5
+  comment     String?  @db.Text
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, userId])
+  @@index([projectId])
+  @@index([userId])
+}
+
+model Favorite {
+  id          String   @id @default(uuid())
+  projectId   String
+  userId      String
+  createdAt   DateTime @default(now())
+  
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, userId])
+  @@index([userId])
+  @@index([projectId])
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  
+  @@index([slug])
+}
+
+model Tag {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  count       Int      @default(0)
+  createdAt   DateTime @default(now())
+  
+  @@index([slug])
+}

@@ -12,7 +12,7 @@ services:
     networks:
       - project-ready-net
     depends_on:
-      - auth-service
+      - gateway
 
   # Auth Service
   auth-service:
@@ -34,6 +34,49 @@ services:
       - postgres
       - redis
 
+  # Project Service
+  project-service:
+    build:
+      context: ./backend/project-service
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/projectready
+      - REDIS_URL=redis://redis:6379
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - AWS_REGION=us-east-1
+      - S3_BUCKET_NAME=project-ready-files
+    networks:
+      - project-ready-net
+    depends_on:
+      - postgres
+      - redis
+      - auth-service
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ./backend/payment-service
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/projectready
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - FRONTEND_URL=http://localhost:8080
+      - PAYMENT_GATEWAY=stripe
+      - DEFAULT_CURRENCY=INR
+    networks:
+      - project-ready-net
+    depends_on:
+      - postgres
+      - auth-service
+
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
@@ -47,14 +90,26 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - project-ready-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Redis Cache
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
     networks:
       - project-ready-net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # API Gateway (Nginx)
   gateway:
@@ -67,6 +122,8 @@ services:
       - project-ready-net
     depends_on:
       - auth-service
+      - project-service
+      - payment-service
 
 networks:
   project-ready-net:
@@ -74,3 +131,4 @@ networks:
 
 volumes:
   postgres-data:
+  redis-data:

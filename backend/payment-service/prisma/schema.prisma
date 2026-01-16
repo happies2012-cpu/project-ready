@@ -1,0 +1,130 @@
+// Prisma schema for Payment Service
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Payment {
+  id                String   @id @default(uuid())
+  userId            String
+  userName          String
+  userEmail         String
+  
+  // Payment details
+  amount            Float
+  currency          String   @default("INR")
+  status            String   // pending, processing, completed, failed, refunded
+  paymentMethod     String   // card, upi, netbanking, wallet
+  
+  // Gateway details
+  gateway           String   // stripe, razorpay
+  gatewayPaymentId  String?  @unique
+  gatewayOrderId    String?
+  gatewaySignature  String?
+  
+  // Project details (if applicable)
+  projectId         String?
+  projectTitle      String?
+  
+  // Subscription details (if applicable)
+  subscriptionId    String?
+  subscriptionPlan  String?
+  
+  // Invoice
+  invoiceNumber     String   @unique
+  invoiceUrl        String?
+  
+  // Metadata
+  description       String?
+  metadata          Json?
+  
+  // Refund
+  refundAmount      Float?
+  refundReason      String?
+  refundedAt        DateTime?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([gatewayPaymentId])
+  @@index([createdAt])
+}
+
+model Subscription {
+  id                String   @id @default(uuid())
+  userId            String
+  userName          String
+  userEmail         String
+  
+  // Subscription details
+  plan              String   // basic, pro, enterprise
+  status            String   // active, cancelled, expired, past_due
+  amount            Float
+  currency          String   @default("INR")
+  interval          String   // month, year
+  
+  // Gateway details
+  gateway           String
+  gatewaySubId      String?  @unique
+  gatewayCustomerId String?
+  
+  // Billing
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean  @default(false)
+  cancelledAt        DateTime?
+  
+  // Trial
+  trialStart         DateTime?
+  trialEnd           DateTime?
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([gatewaySubId])
+}
+
+model Invoice {
+  id              String   @id @default(uuid())
+  invoiceNumber   String   @unique
+  userId          String
+  userName        String
+  userEmail       String
+  
+  // Invoice details
+  amount          Float
+  tax             Float
+  total           Float
+  currency        String   @default("INR")
+  status          String   // draft, sent, paid, overdue, cancelled
+  
+  // Payment reference
+  paymentId       String?
+  
+  // Dates
+  issueDate       DateTime @default(now())
+  dueDate         DateTime
+  paidDate        DateTime?
+  
+  // PDF
+  pdfUrl          String?
+  
+  // Items
+  items           Json
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([invoiceNumber])
+  @@index([status])
+}

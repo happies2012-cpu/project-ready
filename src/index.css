@@ -9,25 +9,25 @@
     /* Light Mode - High Contrast */
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
-    
+
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    
+
     --primary: 222 84% 35%;
     --primary-foreground: 0 0% 100%;
-    
+
     --secondary: 210 20% 96%;
     --secondary-foreground: 222 47% 11%;
-    
+
     --muted: 210 20% 96%;
     --muted-foreground: 222 47% 40%;
-    
+
     --accent: 262 83% 58%;
     --accent-foreground: 0 0% 100%;
-    
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
@@ -36,11 +36,11 @@
 
     --warning: 38 92% 50%;
     --warning-foreground: 222 47% 11%;
-    
+
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 222 84% 35%;
-    
+
     --radius: 0.5rem;
 
     /* Category Colors */
@@ -50,14 +50,14 @@
     --management: 38 92% 50%;
     --arts: 330 81% 60%;
     --tech: 172 66% 50%;
-    
+
     /* Custom gradients */
     --gradient-primary: linear-gradient(135deg, hsl(222 84% 35%) 0%, hsl(242 84% 45%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(282 83% 58%) 50%, hsl(302 83% 58%) 100%);
     --gradient-hero: linear-gradient(135deg, hsl(222 84% 30%) 0%, hsl(222 84% 45%) 50%, hsl(262 83% 58%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-    
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -77,51 +77,56 @@
   }
 
   .dark {
-    --background: 222 47% 8%;
-    --foreground: 210 40% 98%;
+    /* Pure black and dark theme - Magic UI */
+    --background: 0 0% 3%;
+    --foreground: 0 0% 98%;
 
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 222 84% 55%;
-    --primary-foreground: 222 47% 8%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 262 83% 58%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 280 100% 70%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 63% 50%;
+    --destructive-foreground: 0 0% 98%;
 
-    --success: 142 76% 36%;
-    --success-foreground: 210 40% 98%;
+    --success: 142 76% 45%;
+    --success-foreground: 0 0% 98%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 47% 11%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 0 0% 10%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 222 84% 55%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 262 83% 58%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(222 84% 8%) 0%, hsl(222 84% 15%) 50%, hsl(262 83% 25%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(222 47% 11%) 0%, hsl(222 47% 8%) 100%);
+    /* Dark Magic UI Gradients */
+    --gradient-hero: linear-gradient(135deg, #000000 0%, #0a0a0a 25%, #1a0a2e 50%, #2d1b4e 75%, #4a2c6d 100%);
+    --gradient-card: linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(25, 25, 35, 0.9) 100%);
+    --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c026d3 100%);
+    --gradient-accent: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #8b5cf6 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 262 83% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 262 83% 58%;
   }
 }
 
@@ -134,7 +139,12 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display font-semibold tracking-tight;
   }
 }
@@ -201,23 +211,49 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Scrollbar Styling */

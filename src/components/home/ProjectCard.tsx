@@ -21,10 +21,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
 
     return (
         <div
-            className="group relative bg-card/50 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full"
+            className="group relative bg-gradient-to-br from-black/40 via-purple-950/10 to-black/40 backdrop-blur-md rounded-2xl border border-purple-500/20 overflow-hidden hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-500 hover:-translate-y-2 flex flex-col h-full"
         >
             {/* Dynamic Glow Effect */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-accent/50 to-primary/50 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500" />
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
 
             {/* Thumbnail Area */}
             <div className="relative h-56 overflow-hidden">
@@ -38,7 +38,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
 
                 {/* Top Badges */}
                 <div className="absolute top-4 left-4 z-20 flex gap-2">
-                    <Badge variant="secondary" className="bg-black/50 backdrop-blur-md text-white border-white/20">
+                    <Badge variant="secondary" className="bg-black/70 backdrop-blur-md text-white border-white/20 dark:bg-black/50">
                         {project.difficulty}
                     </Badge>
                     {project.featured && (
@@ -122,7 +122,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
                     {project.technology.slice(0, 3).map((tech: string) => (
                         <span
                             key={tech}
-                            className="px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-md bg-secondary/50 text-secondary-foreground border border-white/5"
+                            className="px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-md bg-primary/10 text-primary dark:bg-secondary/50 dark:text-secondary-foreground border border-primary/20 dark:border-white/5"
                         >
                             {tech}
                         </span>
@@ -146,10 +146,25 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
                             {project.downloads}
                         </span>
                     </div>
-                    <div className="flex items-center gap-3">
-                        {project.files.sourceCode && <Code className="w-4 h-4 text-muted-foreground/50" />}
-                        {project.files.documentation && <FileText className="w-4 h-4 text-muted-foreground/50" />}
-                        {project.files.ppt && <Presentation className="w-4 h-4 text-muted-foreground/50" />}
+                    {/* Tech Stack Icons - Using actual tech logos */}
+                    <div className="flex items-center gap-2">
+                        {project.technology.slice(0, 3).map((tech: string, idx: number) => (
+                            <div
+                                key={tech}
+                                className="w-6 h-6 rounded-md bg-white/5 border border-white/10 flex items-center justify-center p-1 hover:bg-white/10 transition-colors"
+                                title={tech}
+                            >
+                                <img
+                                    src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tech.toLowerCase().replace(/\s+/g, '')}/${tech.toLowerCase().replace(/\s+/g, '')}-original.svg`}
+                                    alt={tech}
+                                    className="w-full h-full object-contain"
+                                    onError={(e) => {
+                                        // Fallback to Google Material Icons style
+                                        (e.target as HTMLImageElement).src = `https://img.icons8.com/color/48/${tech.toLowerCase().replace(/\s+/g, '-')}.png`;
+                                    }}
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </Link>

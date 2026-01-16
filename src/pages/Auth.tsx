@@ -69,9 +69,11 @@ const Auth = () => {
         <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 mb-8">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Project Ready Logo"
+              className="h-10 w-auto object-contain"
+            />
             <span className="font-display font-bold text-xl text-foreground">Project Ready</span>
           </Link>
 

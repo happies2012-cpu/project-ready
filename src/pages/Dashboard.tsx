@@ -36,9 +36,11 @@ const Dashboard = () => {
         {/* Logo */}
         <div className="p-6 border-b border-border">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Project Ready Logo"
+              className="h-10 w-auto object-contain"
+            />
             <span className="font-display font-bold text-xl text-foreground">Project Ready</span>
           </Link>
         </div>
