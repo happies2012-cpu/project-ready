@@ -1,0 +1,26 @@
+runtime: nodejs18
+
+handlers:
+  # Serve the index.html for the root URL
+  - url: /
+    static_files: dist/index.html
+    upload: dist/index.html
+    secure: always
+
+  # Serve static files (js, css, images) from the dist directory
+  - url: /(.*)
+    static_files: dist/\1
+    upload: dist/(.*)
+    secure: always
+
+  # Catch-all handler for Single Page Applications (SPA)
+  # Redirects all other routes to index.html so React Router works
+  - url: /.*
+    static_files: dist/index.html
+    upload: dist/index.html
+    secure: always
+
+env_variables:
+  # Placeholder keys - You should set these in GCP Secret Manager or via CLI
+  VITE_SUPABASE_URL: "https://your-project.supabase.co"
+  VITE_SUPABASE_ANON_KEY: "your-anon-key"
