@@ -31,7 +31,10 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/api/projects', projectRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/internal', require('./routes/internal'));
 
 // Error handling
 app.use(errorHandler);

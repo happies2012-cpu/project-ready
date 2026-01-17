@@ -5,6 +5,8 @@ const passport = require('passport');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
+const settingsRoutes = require('./routes/settings');
+const internalRoutes = require('./routes/internal');
 const { errorHandler } = require('./middleware/errorHandler');
 const { rateLimiter } = require('./middleware/rateLimiter');
 
@@ -40,8 +42,10 @@ app.get('/health', (req, res) => {
     });
 });
 
-// API routes
-app.use('/api/v1/auth', authRoutes);
+// API Routes
+app.use('/auth', authRoutes);
+app.use('/api/v1/settings', settingsRoutes);
+app.use('/api/internal', internalRoutes);
 
 // 404 handler
 app.use((req, res) => {

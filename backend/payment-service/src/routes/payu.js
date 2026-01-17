@@ -42,6 +42,35 @@ router.post('/payu/success', express.urlencoded({ extended: true }), async (req,
                     where: { id: payment.id },
                     data: { invoiceUrl: invoicePath }
                 });
+
+                // --- GRANT ACCESS LOGIC ---
+                const axios = require('axios'); // Ensure axios is available or use fetch
+                const internalSecret = process.env.INTERNAL_API_SECRET;
+
+                try {
+                    // 1. Check if it's a Project Purchase
+                    if (payment.projectId) {
+                        await axios.post('http://project-service:3002/api/internal/grant-access', {
+                            userId: payment.userId,
+                            projectId: payment.projectId,
+                            amount: payment.amount
+                        }, { headers: { 'x-internal-secret': internalSecret } });
+                    }
+
+                    // 2. Check if it's a Subscription (e.g. metadata.type === 'subscription')
+                    if (payment.subscriptionPlan) { // or check metadata
+                        await axios.post('http://auth-service:3001/api/internal/update-subscription', {
+                            userId: payment.userId,
+                            plan: payment.subscriptionPlan,
+                            status: 'active',
+                            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days default
+                        }, { headers: { 'x-internal-secret': internalSecret } });
+                    }
+                } catch (err) {
+                    console.error('Failed to grant access on other services:', err.message);
+                    // Don't fail the webhook response, just log it. 
+                    // Ideally we should have a retry mechanism or event queue here.
+                }
             }
 
             return res.redirect(`${process.env.FRONTEND_URL}/payment/success?txnid=${data.txnid}`);

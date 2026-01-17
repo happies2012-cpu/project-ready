@@ -135,7 +135,38 @@ exports.getProjectBySlug = async (req, res) => {
         // Increment views asynchronously
         incrementViews(project.id);
 
-        res.json({ project });
+        // Check Access Logic
+        let hasAccess = true;
+
+        if (project.isPremium) {
+            hasAccess = false;
+
+            // 1. Author or Admin always has access
+            if (req.user && (req.user.id === project.authorId || req.user.role === 'admin')) {
+                hasAccess = true;
+            }
+            // 2. Check if user purchased it
+            else if (req.user) {
+                // Check Subscription (from user token or internal call - for now assume token has it or we query auth)
+                // Note: In a real microservice, we might need to query Auth Service or trust the JWT claims.
+                // Here we trust JWT if it had roles/plans.
+
+                // Check Purchase
+                const purchase = await prisma.userPurchase.findUnique({
+                    where: {
+                        userId_projectId: {
+                            userId: req.user.id,
+                            projectId: project.id
+                        }
+                    }
+                });
+
+                if (purchase) hasAccess = true;
+            }
+        }
+
+        // Return project with access flag
+        res.json({ project, hasAccess });
     } catch (error) {
         console.error('Get project error:', error);
         res.status(500).json({ error: 'Failed to fetch project' });

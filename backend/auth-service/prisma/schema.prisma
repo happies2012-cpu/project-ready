@@ -21,6 +21,12 @@ model User {
   avatar        String?
   emailVerified Boolean   @default(false)
   isActive      Boolean   @default(true)
+  
+  // Subscription
+  subscriptionPlan      String?   // "free", "pro", "enterprise"
+  subscriptionStatus    String?   // "active", "expired", "cancelled"
+  subscriptionExpiresAt DateTime?
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
@@ -57,4 +63,17 @@ model Session {
   
   @@index([userId])
   @@index([token])
+}
+
+model SystemSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String   // JSON string or plain text
+  type        String   @default("string") // string, boolean, number, json
+  description String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
 }

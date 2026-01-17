@@ -283,3 +283,28 @@ INSERT INTO public."Category" ("name", "slug", "description", "order") VALUES
 ('Medical', 'medical', 'Healthcare, Pharmacy, and Medical research projects', 3),
 ('Management', 'management', 'MBA, BBA, and Business management projects', 4),
 ('Arts & Science', 'arts-science', 'Literature, History, Physics, Chemistry projects', 5);
+
+-- ==========================================
+-- System Settings Table
+-- ==========================================
+
+CREATE TABLE public."SystemSetting" (
+    "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    "key" TEXT NOT NULL UNIQUE,
+    "value" TEXT NOT NULL,
+    "type" TEXT DEFAULT 'string', -- string, boolean, number, json
+    "description" TEXT,
+    "isPublic" BOOLEAN DEFAULT false,
+    "createdAt" TIMESTAMPWithTimezone DEFAULT NOW(),
+    "updatedAt" TIMESTAMPWithTimezone DEFAULT NOW()
+);
+
+CREATE INDEX "SystemSetting_key_idx" ON public."SystemSetting"("key");
+
+-- Insert Default Settings
+INSERT INTO public."SystemSetting" ("key", "value", "type", "isPublic", "description") VALUES
+('SITE_NAME', 'Project Ready', 'string', true, 'Global site name'),
+('MAINTENANCE_MODE', 'false', 'boolean', true, 'Toggle maintenance mode'),
+('MAX_UPLOAD_SIZE', '52428800', 'number', true, 'Max file upload size in bytes (50MB)'),
+('SUPPORT_EMAIL', 'support@projectready.com', 'string', true, 'Public support email'),
+('ALLOW_REGISTRATION', 'true', 'boolean', true, 'Allow new user registrations');
